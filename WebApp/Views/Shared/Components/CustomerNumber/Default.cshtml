@@ -1,0 +1,27 @@
+@model Progress.Sitefinity.AspNetCore.FormWidgets.ViewModels.TextField.TextFieldViewModel
+
+<div class="mb-3 @Model.CssClass" data-semantic-field="CustomerNumber">
+    <label class="form-label" for="@Model.FieldName">@Model.Label</label>
+    <input class="form-control"
+           id="@Model.FieldName"
+           name="@Model.FieldName"
+           type="text"
+           value="@Model.PredefinedValue"
+           placeholder="@Model.PlaceholderText"
+           aria-describedby="@(Model.FieldName + "-description") @(Model.FieldName + "-error")"
+           data-customer-number-input
+           data-validation-url="@Url.Action("Validate", "CustomerNumberValidation")"
+           @Html.Raw(Model.ValidationAttributes) />
+
+    @if (!string.IsNullOrWhiteSpace(Model.InstructionalText))
+    {
+        <div id="@(Model.FieldName + "-description")" class="form-text">
+            @Model.InstructionalText
+        </div>
+    }
+
+    <div id="@(Model.FieldName + "-error")"
+         class="invalid-feedback"
+         data-customer-number-error
+         hidden></div>
+</div>

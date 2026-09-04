@@ -6,23 +6,38 @@ using Microsoft.AspNetCore.Mvc;
 [Route("intercept/forms/submit")]
 public class FormInterceptController : ControllerBase
 {
+    private readonly ICustomerNumberSystem customerNumberSystem;
+
+    public FormInterceptController(ICustomerNumberSystem customerNumberSystem)
+    {
+        this.customerNumberSystem = customerNumberSystem;
+    }
+
     [HttpPost("{formName}/{culture}")]
     public async Task<IActionResult> Submit(
         string formName,
         string culture)
     {
-        var form = await Request.ReadFormAsync();
-        //process stuff HERE e.g.
+        var form = await Request.ReadFormAsync(this.HttpContext.RequestAborted);
         var customerNumber = form["CustomerNumber"].FirstOrDefault();
-        var success = customerNumber != "INVALID";
 
-        if (!success)
+        if (form.ContainsKey("CustomerNumber"))
         {
-            return UnprocessableEntity(new
+            var validation = await this.customerNumberSystem.ValidateAsync(
+                customerNumber,
+                this.HttpContext.RequestAborted);
+
+            if (!validation.IsValid)
             {
-                success = false,
-                error = "Custom processing failed"
-            });
+                return this.UnprocessableEntity(new
+                {
+                    success = false,
+                    fieldErrors = new
+                    {
+                        CustomerNumber = new[] { validation.Error }
+                    }
+                });
+            }
         }
 
         var sitefinitySubmitUrl = $"/forms/submit/{formName}/{culture}{Request.QueryString}";

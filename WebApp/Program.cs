@@ -15,6 +15,7 @@ builder.Services.AddViewComponentModels();
 builder.Services.AddFormViewComponentModels();
 
 builder.Services.AddScoped<IFormModel, InterceptedFormModel>();
+builder.Services.AddSingleton<ICustomerNumberSystem, PocCustomerNumberSystem>();
 
 builder.Services.AddControllers();
 var app = builder.Build();

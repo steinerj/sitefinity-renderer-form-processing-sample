@@ -8,18 +8,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Progress.Sitefinity.RestSdk.Clients.Forms;
 
+
+/*
+ALTERNATIVE, not currently used Interceptor that uses the SubmissionClient to allow for postprocessing. Carries additional problems (what happens to the culture context?)
+*/ 
+
 [ApiController]
 [Route("intercept-client/forms/submit")]
 public class FormSubmissionClientController : ControllerBase
 {
     private readonly IFormSubmissionClient submissionClient;
+    private readonly ICustomerNumberSystem customerNumberSystem;
     private readonly ILogger<FormSubmissionClientController> logger;
 
     public FormSubmissionClientController(
         IFormSubmissionClient submissionClient,
+        ICustomerNumberSystem customerNumberSystem,
         ILogger<FormSubmissionClientController> logger)
     {
         this.submissionClient = submissionClient;
+        this.customerNumberSystem = customerNumberSystem;
         this.logger = logger;
     }
 
@@ -31,13 +39,23 @@ public class FormSubmissionClientController : ControllerBase
         var form = await this.Request.ReadFormAsync(this.HttpContext.RequestAborted);
 
         var customerNumber = form["CustomerNumber"].FirstOrDefault();
-        if (customerNumber == "INVALID")
+        if (form.ContainsKey("CustomerNumber"))
         {
-            return this.UnprocessableEntity(new
+            var validation = await this.customerNumberSystem.ValidateAsync(
+                customerNumber,
+                this.HttpContext.RequestAborted);
+
+            if (!validation.IsValid)
             {
-                success = false,
-                error = "Custom processing failed"
-            });
+                return this.UnprocessableEntity(new
+                {
+                    success = false,
+                    fieldErrors = new
+                    {
+                        CustomerNumber = new[] { validation.Error }
+                    }
+                });
+            }
         }
 
         var formData = form
