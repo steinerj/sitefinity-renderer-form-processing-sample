@@ -1,0 +1,62 @@
+# .NET build and publish output
+[Bb]in/
+[Oo]bj/
+[Aa]rtifacts/
+[Pp]ublish/
+
+# Visual Studio and VS Code user state
+.vs/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Test results and code coverage
+[Tt]est[Rr]esult*/
+coverage/
+coverage-*/
+*.coverage
+*.coveragexml
+
+# Logs and local runtime files
+[Ll]og/
+[Ll]ogs/
+*.log
+*.pid
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+secrets.json
+*.pfx
+*.snk
+
+# Optional frontend tooling
+node_modules/
+.sass-cache/
+*.css.map
+*.js.map
+
+# NuGet packages and generated package files
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts.json
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
