@@ -26,7 +26,7 @@ public class FormInterceptController : ControllerBase
         }
 
         var sitefinitySubmitUrl = $"/forms/submit/{formName}/{culture}{Request.QueryString}";
-        // results in HTTP 307 - not sure if that's good or might lead to browser issues it appears to work fine
+        // results in HTTP 307 - not sure if that's best interception action or might lead to browser issues it appears to work fine
         return RedirectPreserveMethod(sitefinitySubmitUrl);
     }
 }

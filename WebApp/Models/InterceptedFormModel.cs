@@ -35,9 +35,9 @@ public class InterceptedFormModel : FormModel
     {
         var model = await base.InitializeViewModel(entity, query);
 
-        // path /forms/submit/MyForm/en becomesintercept/forms/submit/MyForm/en
-        model.SubmitUrl =
-            "/intercept" + model.SubmitUrl;
+        // path /forms/submit/MyForm/en becomesintercept/forms/submit/MyForm/en with custom controller
+        // change to "/intercept-client" if form submission postprocessing is needed in the same controller
+        model.SubmitUrl = "/intercept" + model.SubmitUrl;
 
         return model;
     }
